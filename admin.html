@@ -730,8 +730,18 @@ function renderPanel(id) {
 }
 
 function initAdmin() {
+  // Show Supabase connection status
+  if (!sb) {
+    console.error('Supabase not connected — uploads will not work');
+    // Optionally show a banner:
+    const banner = document.createElement('div');
+    banner.style = 'background:#fee;color:#c00;padding:8px 16px;text-align:center;font-size:13px;';
+    banner.textContent = '⚠️ ไม่สามารถเชื่อมต่อ CMS ได้ — การอัพโหลดรูปจะไม่ทำงาน';
+    document.getElementById('adminApp').prepend(banner);
+  }
   showPanel('dashboard', document.querySelector('.nav-item'));
 }
+
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 async function renderDashboard() {

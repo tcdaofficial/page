@@ -877,16 +877,17 @@ if (SB_URL && SB_KEY) {
 }
 
 // Helper: read from Supabase or fall back to localStorage
-async function sbGet(table, lsKey) {
+async function sbFetch(table, lsKey, fallback) {
+  if (fallback === undefined) fallback = [];
   if (sb) {
-    const { data, error } = await sb.from(table).select('*').order('created_at', { ascending: false });
-    if (!error && data) return data;
+    try {
+      const { data, error } = await sb.from(table).select('*').order('created_at', { ascending: false });
+      if (!error && data) return data;
+    } catch(e) { console.warn('sbFetch error:', e); }
   }
-  return JSON.parse(localStorage.getItem(lsKey) || '[]');
+  try { return JSON.parse(localStorage.getItem(lsKey)) || fallback; } catch { return fallback; }
 }
-
-// Helper: insert into Supabase or fall back to localStorage
-async function sbInsert(table, lsKey, row) {
+async function sbGet(table, lsKey) {
   if (sb) {
     const { error } = await sb.from(table).insert([row]);
     if (!error) return true;

@@ -258,6 +258,8 @@
     <button class="nav-item" onclick="showPanel('resources',this)"><span class="icon">📚</span>ทรัพยากร</button>
     <div class="sidebar-section">ระบบ</div>
     <button class="nav-item" onclick="showPanel('settings',this)"><span class="icon">⚙️</span>ตั้งค่า</button>
+    <button class="nav-item" onclick="window.open('index.html','_blank')"><span class="icon">🌐</span>ดูเว็บไซต์</button>
+    <button class="nav-item" onclick="window.open('finance.html','_blank')"><span class="icon">💰</span>ระบบการเงิน</button>
     <div class="sidebar-footer">
       <div class="admin-user">
         <div class="admin-avatar">👤</div>
@@ -613,24 +615,30 @@ function setData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
 async function sbFetch(table, lsKey, fallback) {
   if (fallback === undefined) fallback = [];
+  // ลอง Supabase ก่อน
   if (sb) {
     try {
       const { data, error } = await sb.from(table).select('*').order('created_at', { ascending: false });
-      if (!error && data) return data;
+      if (!error && data && data.length > 0) return data;
     } catch(e) { console.warn('sbFetch error:', e); }
   }
+  // fallback: localStorage
   return getData(lsKey, fallback);
 }
 async function sbAdd(table, lsKey, row) {
+  // บันทึกลง localStorage เสมอ (fallback ที่เชื่อถือได้)
+  const arr = getData(lsKey, []);
+  const newRow = { ...row, id: row.id || Date.now() };
+  arr.unshift(newRow); // เพิ่มที่หัวลิสต์ (ล่าสุดก่อน)
+  setData(lsKey, arr);
+
+  // พยายามบันทึกลง Supabase ด้วย (ถ้าเชื่อมต่อได้)
   if (sb) {
     try {
       const { error } = await sb.from(table).insert([row]);
-      if (!error) return;
+      if (error) console.warn('sbAdd Supabase error (saved to localStorage):', error.message);
     } catch(e) { console.warn('sbAdd error:', e); }
   }
-  const arr = getData(lsKey, []);
-  arr.push({ ...row, id: row.id || Date.now() });
-  setData(lsKey, arr);
 }
 async function sbDelete(table, lsKey, id) {
   if (sb) {
@@ -656,14 +664,18 @@ async function sbUpdate(table, lsKey, id, updates) {
 // ── LOGO ──────────────────────────────────────────────────────────────────────
 function loadLogo() {
   const src = localStorage.getItem('tcda_logo_url') || localStorage.getItem('tcda_logo') || '';
-  if (src) {
-    document.querySelectorAll('.site-logo-img').forEach(img => {
-      img.src = src;
-      img.style.display = '';
-    });
-    const prev = document.getElementById('logo-preview');
-    if (prev) { prev.src = src; prev.classList.add('show'); }
-  }
+  applyLogo(src);
+}
+
+function applyLogo(src) {
+  if (!src) return;
+  document.querySelectorAll('.site-logo-img').forEach(img => {
+    img.src = src;
+    img.style.display = '';
+    img.onerror = function(){ this.style.display='none'; };
+  });
+  const prev = document.getElementById('logo-preview');
+  if (prev) { prev.src = src; prev.style.display = 'block'; }
 }
 
 async function uploadLogo() {
@@ -673,23 +685,8 @@ async function uploadLogo() {
   const url = await uploadToStorage(input.files[0], 'logos', 'logo-upload-progress');
   if (!url) return;
 
-  // บันทึก URL
   localStorage.setItem('tcda_logo_url', url);
-  // อัพเดตรูปทุกที่
-  document.querySelectorAll('.site-logo-img').forEach(img => {
-    img.src = url;
-    img.style.display = '';
-  });
-  const prev = document.getElementById('logo-preview');
-  if (prev) { prev.src = url; prev.classList.add('show'); }
-
-  // บันทึก URL ใน Supabase settings table (optional)
-  if (sb) {
-    try {
-      await sb.from('settings').upsert({ key: 'logo_url', value: url });
-    } catch(e) { /* settings table might not exist */ }
-  }
-
+  applyLogo(url);
   showSuccess('logo-success');
 }
 
@@ -814,12 +811,14 @@ function exportCSV() {
 
 // ── EVENTS ────────────────────────────────────────────────────────────────────
 async function renderEvents() {
-  const events = await sbFetch('events', 'tcda_events', []);
   const el = document.getElementById('events-table');
   if (!el) return;
+  el.innerHTML = '<p style="color:var(--muted);padding:1rem">⏳ กำลังโหลด...</p>';
+  const events = await sbFetch('events', 'tcda_events', []);
+  console.log('renderEvents: found', events.length, 'events');
   el.innerHTML = events.length ? events.map(e => `
     <div class="item-card">
-      ${e.photo ? `<img src="${e.photo}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0">` : '<div style="width:60px;height:60px;border-radius:8px;background:var(--bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem">📅</div>'}
+      ${e.photo ? `<img src="${e.photo}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:60px;height:60px;border-radius:8px;background:var(--bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem">📅</div>'}
       <div style="flex:1">
         <strong>${e.title_th || ''}</strong><br>
         <small style="color:var(--muted)">${e.date || ''} · ${e.venue || ''}</small>
@@ -855,7 +854,10 @@ async function addEvent() {
 
   await sbAdd('events', 'tcda_events', row);
   clearEventForm();
-  renderEvents();
+  await renderEvents();
+  // scroll ไปที่ list
+  const evTable = document.getElementById('events-table');
+  if (evTable) evTable.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 async function deleteEvent(id, photoUrl) {

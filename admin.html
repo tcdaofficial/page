@@ -613,14 +613,28 @@ function getData(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch { return fallback; }
 }
 function setData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+function setLocalOnly(lsKey, value) {
+  localStorage.setItem(`${lsKey}__local_only`, value ? '1' : '0');
+}
+function isLocalOnly(lsKey) {
+  return localStorage.getItem(`${lsKey}__local_only`) === '1';
+}
 
 async function sbFetch(table, lsKey, fallback) {
   if (fallback === undefined) fallback = [];
+  if (isLocalOnly(lsKey)) return getData(lsKey, fallback);
   // ลอง Supabase ก่อน
   if (sb) {
     try {
       const { data, error } = await sb.from(table).select('*').order('created_at', { ascending: false });
-      if (!error && data && data.length > 0) return data;
+      if (!error) {
+        if (data && data.length > 0) {
+          setData(lsKey, data);
+          return data;
+        }
+        const local = getData(lsKey, []);
+        if (local.length > 0) return local;
+      }
     } catch(e) { console.warn('sbFetch error:', e); }
   }
   // fallback: localStorage
@@ -637,16 +651,25 @@ async function sbAdd(table, lsKey, row) {
   if (sb) {
     try {
       const { error } = await sb.from(table).insert([row]);
-      if (error) console.warn('sbAdd Supabase error (saved to localStorage):', error.message);
-    } catch(e) { console.warn('sbAdd error:', e); }
+      if (error) {
+        console.warn('sbAdd Supabase error (saved to localStorage):', error.message);
+        setLocalOnly(lsKey, true);
+      } else {
+        setLocalOnly(lsKey, false);
+      }
+    } catch(e) { console.warn('sbAdd error:', e); setLocalOnly(lsKey, true); }
   }
 }
 async function sbDelete(table, lsKey, id) {
   if (sb) {
     try {
       const { error } = await sb.from(table).delete().eq('id', id);
-      if (!error) return;
-    } catch(e) { console.warn('sbDelete error:', e); }
+      if (!error) {
+        setLocalOnly(lsKey, false);
+        return;
+      }
+      setLocalOnly(lsKey, true);
+    } catch(e) { console.warn('sbDelete error:', e); setLocalOnly(lsKey, true); }
   }
   setData(lsKey, getData(lsKey, []).filter(r => r.id != id));
 }
@@ -654,8 +677,12 @@ async function sbUpdate(table, lsKey, id, updates) {
   if (sb) {
     try {
       const { error } = await sb.from(table).update(updates).eq('id', id);
-      if (!error) return;
-    } catch(e) { console.warn('sbUpdate error:', e); }
+      if (!error) {
+        setLocalOnly(lsKey, false);
+        return;
+      }
+      setLocalOnly(lsKey, true);
+    } catch(e) { console.warn('sbUpdate error:', e); setLocalOnly(lsKey, true); }
   }
   const arr = getData(lsKey, []);
   const i = arr.findIndex(r => r.id == id);

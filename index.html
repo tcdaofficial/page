@@ -525,7 +525,7 @@
             <span class="en">Please read the <a href="#" onclick="openRules();return false;" style="color:var(--gold);">Association Rules</a> before applying.</span>
           </p>
           <div class="fg"><label><span class="th">ชื่อ-สกุล (นาย/นางสาว/นาง) *</span><span class="en">Full Name (Mr./Ms./Mrs.) *</span></label><input id="f-fname" type="text" placeholder="นาย/นางสาว ชื่อ นามสกุล"></div>
-          <div class="fg"><label><span class="th">เลขที่บัตรประชาชน *</span><span class="en">National ID Number *</span></label><input id="f-idcard" type="text" placeholder="x-xxxx-xxxxx-xx-x" maxlength="17"></div>
+          <div class="fg"><label><span class="th">เลขที่บัตรประชาชน *</span><span class="en">National ID Number *</span></label><input id="f-id" type="text" placeholder="x-xxxx-xxxxx-xx-x" maxlength="17"></div>
           <div class="fg"><label><span class="th">วัน เดือน ปีเกิด *</span><span class="en">Date of Birth *</span></label><input id="f-dob" type="date"></div>
           <div class="fg"><label><span class="th">เบอร์โทรศัพท์ *</span><span class="en">Phone Number *</span></label><input id="f-phone" type="tel" placeholder="08x-xxx-xxxx"></div>
           <div class="fg"><label><span class="th">อีเมล *</span><span class="en">Email *</span></label><input id="f-email" type="email" placeholder="email@example.com"></div>
@@ -948,7 +948,7 @@ async function loadBoard() {
 // --- 3. ส่งใบสมัครสมาชิก ---
 async function submitMem() {
     const fname   = document.getElementById('f-fname')?.value?.trim();
-    const idcard  = document.getElementById('f-idcard')?.value?.trim();
+    const id  = document.getElementById('f-id')?.value?.trim();
     const dob     = document.getElementById('f-dob')?.value;
     const phone   = document.getElementById('f-phone')?.value?.trim();
     const email   = document.getElementById('f-email')?.value?.trim();
@@ -956,7 +956,7 @@ async function submitMem() {
     const type    = document.getElementById('f-type')?.value;
     const region  = document.getElementById('f-region')?.value;
 
-    if (!fname || !idcard || !dob || !phone || !email || !address || !type || !region) {
+    if (!fname || !id || !dob || !phone || !email || !address || !type || !region) {
         alert('กรุณากรอกข้อมูลให้ครบทุกช่อง\nPlease fill in all required fields.');
         return;
     }
@@ -967,7 +967,7 @@ async function submitMem() {
     const baseRow = {
         id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : undefined,
         name: fname,
-        id_ca: idcard,
+        id: id,
         dob: dob,
         phone: phone,
         email: email,

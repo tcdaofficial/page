@@ -246,6 +246,7 @@
     </div>
     <button class="btn-admin-login" onclick="adminLogin()">เข้าสู่ระบบ / Login</button>
     <div class="login-error" id="loginError">รหัสผ่านไม่ถูกต้อง / Incorrect password</div>
+    <p class="login-hint">Demo password: <strong>admin123</strong></p>
   </div>
 </div>
 
@@ -288,6 +289,9 @@
     </button>
     <button class="nav-item" onclick="window.open('index.html','_blank')">
       <span class="icon">🌐</span><span>ดูเว็บไซต์</span>
+    </button>
+    <button class="nav-item" onclick="window.open('finance.html','_blank')">
+      <span class="icon">💰</span><span>ระบบการเงิน</span>
     </button>
 
     <div class="sidebar-footer">
@@ -736,9 +740,9 @@ function initAdmin() {
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
-function renderDashboard() {
-  const apps = getData('tcda_applications', []);
-  const events = getData('tcda_events', []);
+async function renderDashboard() {
+  const apps = await sbFetch('applications', 'tcda_applications', []);
+  const events = await sbFetch('events', 'tcda_events', []);
   const board = getData('tcda_board', []);
   const pending = apps.filter(a => a.status === 'pending').length;
   const approved = apps.filter(a => a.status === 'approved').length;
@@ -760,8 +764,8 @@ function renderDashboard() {
 }
 
 // ── APPLICATIONS ──────────────────────────────────────────────────────────────
-function renderApplications() {
-  const apps = getData('tcda_applications', []);
+async function renderApplications() {
+  const apps = await sbFetch('applications', 'tcda_applications', []);
   const search = (document.getElementById('appSearch') || {}).value || '';
   const filter = (document.getElementById('appFilter') || {}).value || 'all';
   let filtered = apps.filter(a => {
@@ -792,14 +796,13 @@ function renderApplications() {
     </tr>`).join('') : '<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--muted)">ไม่พบข้อมูล</td></tr>'}
   </tbody></table>`;
 }
-function updateApp(id, status) {
-  const apps = getData('tcda_applications', []).map(a => a.id == id ? { ...a, status } : a);
-  setData('tcda_applications', apps);
+async function updateApp(id, status) {
+  await sbUpdate('applications', 'tcda_applications', id, { status });
   renderApplications(); renderDashboard();
 }
-function deleteApp(id) {
+async function deleteApp(id) {
   if (!confirm('ลบใบสมัครนี้?')) return;
-  setData('tcda_applications', getData('tcda_applications', []).filter(a => a.id != id));
+  await sbDelete('applications', 'tcda_applications', id);
   renderApplications(); renderDashboard();
 }
 function exportCSV() {

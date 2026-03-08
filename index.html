@@ -875,40 +875,51 @@ async function renderEvents() {
   if(!container) return;
   try {
     const { data, error } = await sb.from('events').select('*').order('date', { ascending: true });
-    if (error || !data || data.length === 0) {
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
       container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);"><h3>ยังไม่มีประกาศกิจกรรมในขณะนี้</h3></div>';
       return;
     }
+
     container.innerHTML = data.map(e => `
       <div class="event-card fade-in">
         ${e.photo ? `<div class="event-img-wrap"><img src="${e.photo}" style="width:100%;height:220px;object-fit:cover;"></div>` : ''}
         <div class="event-body">
-          <h3 class="event-title-t">${e.titleTh || ''}</h3>
-          <p class="event-desc-t">${e.descTh || ''}</p>
-          <div class="event-venue-t">📍 ${e.venue || 'TBA'} | 📅 ${e.date || ''}</div>
+          <div class="event-date-col">
+            <div class="event-day">${e.date ? new Date(e.date).getDate() : '--'}</div>
+            <div class="event-mon">${e.date ? new Date(e.date).toLocaleString('th', {month:'short'}) : '--'}</div>
+          </div>
+          <div style="flex:1;">
+            <h3 class="event-title-t">${e.titleTh || ''}</h3>
+            <p class="event-desc-t">${e.descTh || ''}</p>
+            <div class="event-venue-t">📍 ${e.venue || 'TBA'}</div>
+          </div>
         </div>
       </div>`).join('');
-  } catch(err) { console.error("Event error:", err); }
+  } catch(err) { console.error("Events error:", err); }
 }
-
 // 3. Fetch & Render Board (หน้ากรรมการ)
 async function renderBoard() {
   const container = document.getElementById('board-grid');
   if(!container) return;
   try {
-    const { data } = await sb.from('board').select('*').order('sort_order', { ascending: true });
-    const fallback = [
-      {th:'อ.ดร.ภาวศุทธิ์ พิริยะพงษ์รัตน์', en:'Dr. Pawasut Piriyapongrat', role:'นายกสมาคม / President'}
-    ];
-    const list = (data && data.length > 0) ? data : fallback;
-    container.innerHTML = list.map((m, i) => `
-      <div class="board-card fade-in ${i === 0 ? 'pres' : ''}">
-        <div class="board-avatar">${m.photo ? `<img src="${m.photo}">` : '🎵'}</div>
-        <div class="bname-th">${m.th || ''}</div>
-        <div class="bname-en">${m.en || ''}</div>
-        <div class="brole">${m.role || ''}</div>
-      </div>`).join('');
-  } catch(e) {}
+    const { data, error } = await sb.from('board').select('*').order('sort_order', { ascending: true });
+    if (error) throw error;
+
+    // ถ้ามีข้อมูลใน Supabase ให้แสดงผลแทนของเดิม
+    if (data && data.length > 0) {
+      container.innerHTML = data.map((m, i) => `
+        <div class="board-card fade-in ${i === 0 ? 'pres' : ''}">
+          <div class="board-avatar">
+            ${m.photo ? `<img src="${m.photo}" alt="${m.th}">` : '🎵'}
+          </div>
+          <div class="bname-th">${m.th || ''}</div>
+          <div class="bname-en">${m.en || ''}</div>
+          <div class="brole">${m.role || ''}</div>
+        </div>`).join('');
+    }
+  } catch(err) { console.error("Board error:", err); }
   initFadeIn();
 }
 

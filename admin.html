@@ -593,7 +593,44 @@ async function deleteFromStorage(publicUrl) {
     console.warn('Delete from storage failed:', e);
   }
 }
+   // 2. ฟังก์ชันสำหรับบันทึกกิจกรรม (Events)
+async function saveEvent(eventData) {
+  try {
+    const { data, error } = await sb
+      .from('events') // ชื่อตารางใน Supabase
+      .insert([
+        { 
+          titleTh: eventData.title, 
+          descTh: eventData.desc, 
+          date: eventData.date, 
+          venue: eventData.venue, 
+          photo: eventData.imageUrl // URL รูปภาพที่อัปโหลดแล้ว
+        }
+      ]);
 
+    if (error) throw error;
+    alert("บันทึกข้อมูลเรียบร้อยแล้ว!");
+  } catch (err) {
+    console.error("Error saving:", err.message);
+    alert("เกิดข้อผิดพลาด: " + err.message);
+  }
+}
+   // Board
+  async function updateBoardMember(memberData) {
+  const { data, error } = await sb
+    .from('board')
+    .insert([
+      { 
+        th: memberData.nameTh, 
+        en: memberData.nameEn, 
+        role: memberData.position, 
+        photo: memberData.photoUrl,
+        sort_order: memberData.order 
+      }
+    ]);
+    
+  if(!error) alert("อัปเดตข้อมูลกรรมการสำเร็จ!");
+}
 // preview ก่อนอัพโหลด
 function previewImage(input, previewId) {
   const preview = document.getElementById(previewId);

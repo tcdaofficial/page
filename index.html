@@ -137,8 +137,8 @@
     content:''; position:absolute; bottom:-40px; right:-40px;
     width:160px; height:160px; border-radius:50%; background:rgba(122,30,30,0.28);
   }
-  .about-visual img { width:110px; margin:1.8rem 0 0; filter:brightness(0) invert(1); position:relative; order:2; }
-  .about-visual-text { color:rgba(255,255,255,0.78); font-size:0.88rem; line-height:1.9; position:relative; order:1; }
+  .about-visual img { width:110px; margin-top:auto; position:relative; order:2; }
+  .about-visual-text { color:rgba(255,255,255,0.78); font-size:0.88rem; line-height:1.9; position:relative; order:1; flex:1; }
   .about-visual-text strong { color:var(--gold); }
   .about-text p { color:var(--muted); line-height:1.9; font-size:0.92rem; margin-bottom:1rem; }
   .about-text h3 { font-family:'Libre Baskerville','Sarabun',serif; font-size:1.45rem; font-weight:600; color:var(--navy); margin:1.5rem 0 0.7rem; }
@@ -525,10 +525,10 @@
             <span class="en">Please read the <a href="#" onclick="openRules();return false;" style="color:var(--gold);">Association Rules</a> before applying.</span>
           </p>
           <div class="fg"><label><span class="th">ชื่อ-สกุล (นาย/นางสาว/นาง) *</span><span class="en">Full Name (Mr./Ms./Mrs.) *</span></label><input id="f-fname" type="text" placeholder="นาย/นางสาว ชื่อ นามสกุล"></div>
-          <div class="fg"><label><span class="th">เลขที่บัตรประชาชน *</span><span class="en">National ID Number *</span></label><input id="f-id" type="text" placeholder="x-xxxx-xxxxx-xx-x" maxlength="17"></div>
           <div class="fg"><label><span class="th">วัน เดือน ปีเกิด *</span><span class="en">Date of Birth *</span></label><input id="f-dob" type="date"></div>
           <div class="fg"><label><span class="th">เบอร์โทรศัพท์ *</span><span class="en">Phone Number *</span></label><input id="f-phone" type="tel" placeholder="08x-xxx-xxxx"></div>
           <div class="fg"><label><span class="th">อีเมล *</span><span class="en">Email *</span></label><input id="f-email" type="email" placeholder="email@example.com"></div>
+          <div class="fg"><label><span class="th">เลขที่บัตรประชาชน *</span><span class="en">National ID Number *</span></label><input id="f-idcard" type="text" placeholder="x-xxxx-xxxxx-xx-x" maxlength="17"></div>
           <div class="fg"><label><span class="th">ที่อยู่ที่สามารถติดต่อได้ *</span><span class="en">Mailing Address *</span></label><input id="f-address" type="text" placeholder="บ้านเลขที่ ซอย ถนน แขวง เขต จังหวัด รหัสไปรษณีย์"></div>
           <div class="fg">
             <label><span class="th">อาชีพ *</span><span class="en">Occupation *</span></label>
@@ -557,12 +557,14 @@
               • บุคคลทั่วไป: <strong style="color:var(--gold);">500 บาท/ปี</strong><br>
               • นักเรียน/นักศึกษา: <strong style="color:var(--gold);">300 บาท/ปี</strong><br>
               • สมาชิกกิตติมศักดิ์: ไม่เสียค่าบำรุง<br><br>
-              โอนเงินแล้วส่งสลิปที่ <a href="tcdaofficial@gmail.com">
+              โอนเงินแล้วส่งสลิปที่ <a href="mailto:tcdaofficial@gmail.com">tcdaofficial@gmail.com</a>
+            </span>
             <span class="en">
               • General: <strong style="color:var(--gold);">500 THB/year</strong><br>
               • Student: <strong style="color:var(--gold);">300 THB/year</strong><br>
               • Honorary: No fee<br><br>
-              Transfer and send slip to <a href="tcdaofficial@gmail.com">
+              Transfer and send slip to <a href="mailto:tcdaofficial@gmail.com">tcdaofficial@gmail.com</a>
+            </span>
           </div>
           <button class="btn-submit" onclick="submitMem()"><span class="th">ดำเนินการต่อ / ส่งใบสมัคร</span><span class="en">Submit Application</span></button>
         </div>
@@ -616,12 +618,13 @@
             <div style="background:rgba(27,42,74,0.04);border-radius:8px;padding:0.9rem 1rem;font-size:0.82rem;color:var(--muted);line-height:1.9;">
               <span class="th">
                 📎 หลังโอนเงิน ส่งหลักฐานการชำระมาที่<br>
-                <a href="tcdaofficial@gmail.com" style="color:var(--burgundy);font-weight:600;">
+                <a href="mailto:tcdaofficial@gmail.com" style="color:var(--burgundy);font-weight:600;">tcdaofficial@gmail.com</a><br>
+                พร้อมระบุ <strong>ชื่อ-สกุล</strong> และ <strong>อีเมลที่สมัคร</strong><br>
                 ทีมงานจะส่ง <strong>รหัสเข้าระบบสมาชิก</strong> ให้ทางอีเมลภายใน 3 วันทำการ
               </span>
               <span class="en">
                 📎 After transfer, send your slip to<br>
-                <a href="tcdaofficial@gmail.com" style="color:var(--burgundy);font-weight:600;">
+                <a href="mailto:tcdaofficial@gmail.com" style="color:var(--burgundy);font-weight:600;">tcdaofficial@gmail.com</a><br>
                 with your <strong>full name</strong> and <strong>registered email</strong><br>
                 We'll send your <strong>member login password</strong> within 3 business days.
               </span>
@@ -846,7 +849,7 @@
       </div>
       <div class="footer-col">
         <h4><span class="th">ติดต่อ</span><span class="en">Contact</span></h4>
-        <a href="tcdaofficial@gmail.com"></a>
+        <a href="mailto:tcdaofficial@gmail.com">tcdaofficial@gmail.com</a>
         <a href="https://www.thaicda.org" target="_blank">www.thaicda.org</a>
         <a href="https://www.facebook.com/tcda.thailand" target="_blank" id="fb-footer-link" style="display:flex;align-items:center;gap:6px;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" opacity="0.55"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.696 4.533-4.696 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.883v2.27h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
@@ -861,8 +864,7 @@
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const SB_URL = 'https://mfzuwjhptgcbzgvntubm.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1menV3amhwdGdjYnpndm50dWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4Njg2NjIsImV4cCI6MjA4ODQ0NDY2Mn0.0ZmoDrbf4Ku5UEMvwuQwBJ-Vy8xVh_U66n6xuA12A58';
 const sb = supabase.createClient(SB_URL, SB_KEY);
@@ -945,15 +947,15 @@ async function loadBoard() {
 // --- 3. ส่งใบสมัครสมาชิก ---
 async function submitMem() {
     const fname   = document.getElementById('f-fname')?.value?.trim();
-    const id  = document.getElementById('f-id')?.value?.trim();
     const dob     = document.getElementById('f-dob')?.value;
     const phone   = document.getElementById('f-phone')?.value?.trim();
     const email   = document.getElementById('f-email')?.value?.trim();
+    const idcard  = document.getElementById('f-idcard')?.value?.trim();
     const address = document.getElementById('f-address')?.value?.trim();
     const type    = document.getElementById('f-type')?.value;
     const region  = document.getElementById('f-region')?.value;
 
-    if (!fname || !id || !dob || !phone || !email || !address || !type || !region) {
+    if (!fname || !dob || !phone || !email || !idcard || !address || !type || !region) {
         alert('กรุณากรอกข้อมูลให้ครบทุกช่อง\nPlease fill in all required fields.');
         return;
     }
@@ -964,7 +966,7 @@ async function submitMem() {
     const baseRow = {
         id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : undefined,
         name: fname,
-        id: id,
+        id_card: idcard,
         dob: dob,
         phone: phone,
         email: email,
@@ -1279,20 +1281,18 @@ document.addEventListener('DOMContentLoaded', () => {
     setLang('th');
 
     // โหลดโลโก้จาก Admin (localStorage) ถ้ามี
-    const defaultLogo =
-        (document.querySelector('.site-logo-img') || {}).src ||
-        (document.querySelector('.hero-logo') || {}).src ||
-        '';
     const storedLogo = localStorage.getItem('tcda_logo_url') || localStorage.getItem('tcda_logo') || '';
-    const finalLogo = storedLogo || defaultLogo;
-    if (finalLogo) {
-        document.querySelectorAll('.site-logo-img, .hero-logo').forEach(img => {
-            img.src = finalLogo;
-            img.style.opacity = '1';
-            img.style.display = '';
-            img.onerror = function(){ this.style.opacity = '0'; };
-        });
-    }
+    document.querySelectorAll('.site-logo-img').forEach(img => {
+        const defaultSrc = img.src || '';
+        if (storedLogo) {
+            img.src = storedLogo;
+            img.onerror = function() {
+                this.src = defaultSrc;
+                this.style.opacity = '1';
+                this.style.display = '';
+            };
+        }
+    });
 
     // โหลดข้อมูลสาธารณะ
     loadEvents();

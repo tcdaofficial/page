@@ -650,7 +650,7 @@
       <div class="lf"><label><span class="th">อีเมล</span><span class="en">Email</span></label><input id="l-email" type="email" placeholder="email@example.com"></div>
       <div class="lf"><label><span class="th">รหัสผ่าน</span><span class="en">Password</span></label><input id="l-pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <button class="btn-login" onclick="doLogin()"><span class="th">เข้าสู่ระบบ</span><span class="en">Login</span></button>
-      <p class="login-hint">Demo: อีเมลใดก็ได้ + รหัสผ่าน "member"</p>
+
     </div>
 
     <div id="membersContent" class="members-content">
@@ -934,7 +934,7 @@ function doLogin(){
     document.getElementById('memberGreet').textContent=email.split('@')[0];
     loadMemberContent();
   } else {
-    alert('ข้อมูลไม่ถูกต้อง — Demo: อีเมลใดก็ได้ + รหัสผ่าน "member"');
+    alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
   }
 }
 function doLogout(){

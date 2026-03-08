@@ -556,13 +556,13 @@
               • บุคคลทั่วไป: <strong style="color:var(--gold);">500 บาท/ปี</strong><br>
               • นักเรียน/นักศึกษา: <strong style="color:var(--gold);">300 บาท/ปี</strong><br>
               • สมาชิกกิตติมศักดิ์: ไม่เสียค่าบำรุง<br><br>
-              โอนเงินแล้วส่งสลิปที่ <a href="mailto:tcdaofficial@gmail.com">tcdaofficial@gmail.com</a>
+              โอนเงินแล้วส่งสลิปที่ <a href="/cdn-cgi/l/email-protection#76021512171910101f151f171a36111b171f1a5815191b"><span class="__cf_email__" data-cfemail="90e4f3f4f1fff6f6f9f3f9f1fcd0f7fdf1f9fcbef3fffd">[email&#160;protected]</span></a>
             </span>
             <span class="en">
               • General: <strong style="color:var(--gold);">500 THB/year</strong><br>
               • Student: <strong style="color:var(--gold);">300 THB/year</strong><br>
               • Honorary: No fee<br><br>
-              Transfer and send slip to <a href="mailto:tcdaofficial@gmail.com">tcdaofficial@gmail.com</a>
+              Transfer and send slip to <a href="/cdn-cgi/l/email-protection#9de9fef9fcf2fbfbf4fef4fcf1ddfaf0fcf4f1b3fef2f0"><span class="__cf_email__" data-cfemail="cfbbacabaea0a9a9a6aca6aea38fa8a2aea6a3e1aca0a2">[email&#160;protected]</span></a>
             </span>
           </div>
           <button class="btn-submit" onclick="submitMem()"><span class="th">ดำเนินการต่อ / ส่งใบสมัคร</span><span class="en">Submit Application</span></button>
@@ -617,13 +617,13 @@
             <div style="background:rgba(27,42,74,0.04);border-radius:8px;padding:0.9rem 1rem;font-size:0.82rem;color:var(--muted);line-height:1.9;">
               <span class="th">
                 📎 หลังโอนเงิน ส่งหลักฐานการชำระมาที่<br>
-                <a href="mailto:tcdaofficial@gmail.com" style="color:var(--burgundy);font-weight:600;">tcdaofficial@gmail.com</a><br>
+                <a href="/cdn-cgi/l/email-protection#80f4e3e4e1efe6e6e9e3e9e1ecc0e7ede1e9ecaee3efed" style="color:var(--burgundy);font-weight:600;"><span class="__cf_email__" data-cfemail="a7d3c4c3c6c8c1c1cec4cec6cbe7c0cac6cecb89c4c8ca">[email&#160;protected]</span></a><br>
                 พร้อมระบุ <strong>ชื่อ-สกุล</strong> และ <strong>อีเมลที่สมัคร</strong><br>
                 ทีมงานจะส่ง <strong>รหัสเข้าระบบสมาชิก</strong> ให้ทางอีเมลภายใน 3 วันทำการ
               </span>
               <span class="en">
                 📎 After transfer, send your slip to<br>
-                <a href="mailto:tcdaofficial@gmail.com" style="color:var(--burgundy);font-weight:600;">tcdaofficial@gmail.com</a><br>
+                <a href="/cdn-cgi/l/email-protection#44302720252b22222d272d2528042329252d286a272b29" style="color:var(--burgundy);font-weight:600;"><span class="__cf_email__" data-cfemail="8df9eee9ece2ebebe4eee4ece1cdeae0ece4e1a3eee2e0">[email&#160;protected]</span></a><br>
                 with your <strong>full name</strong> and <strong>registered email</strong><br>
                 We'll send your <strong>member login password</strong> within 3 business days.
               </span>
@@ -848,7 +848,7 @@
       </div>
       <div class="footer-col">
         <h4><span class="th">ติดต่อ</span><span class="en">Contact</span></h4>
-        <a href="mailto:tcdaofficial@gmail.com">tcdaofficial@gmail.com</a>
+        <a href="/cdn-cgi/l/email-protection#72061116131d14141b111b131e32151f131b1e5c111d1f"><span class="__cf_email__" data-cfemail="384c5b5c59575e5e515b515954785f55595154165b5755">[email&#160;protected]</span></a>
         <a href="https://www.thaicda.org" target="_blank">www.thaicda.org</a>
         <a href="https://www.facebook.com/tcda.thailand" target="_blank" id="fb-footer-link" style="display:flex;align-items:center;gap:6px;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" opacity="0.55"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.696 4.533-4.696 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.883v2.27h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
@@ -863,7 +863,7 @@
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════════
 //  SUPABASE CONFIG — paste your keys here
 //  ไปที่ supabase.com → project → Settings → API
@@ -881,7 +881,7 @@ if (SB_URL && SB_KEY) {
 async function sbGet(table, lsKey) {
   if (sb) {
     const { data, error } = await sb.from(table).select('*').order('created_at', { ascending: false });
-    if (!error && data) return data;
+    if (!error && data && data.length > 0) return data;
   }
   return JSON.parse(localStorage.getItem(lsKey) || '[]');
 }
@@ -1126,31 +1126,46 @@ const defaultBoard=[
   {th:'อ.ภาธร สวัสดิสุข',en:'Patorn Sawatdisuk',role:'กรรมการ / Director',photo:''},
 ];
 async function renderBoard(){
-  let board = null;
-  try {
-    if (sb) board = await sbGet('board', 'tcda_board');
-  } catch(e) {}
+  // 1) ลอง localStorage ก่อน (admin บันทึกไว้ที่นี่)
+  let board = JSON.parse(localStorage.getItem('tcda_board') || 'null');
+
+  // 2) ถ้าไม่มีใน localStorage → ลอง Supabase
+  if (!board || !board.length) {
+    try {
+      if (sb) board = await sbGet('board', 'tcda_board');
+    } catch(e) {}
+  }
+
+  // 3) fallback defaultBoard
   if (!board || !board.length) board = defaultBoard;
+
   document.getElementById('board-grid').innerHTML=board.map((m,i)=>`
     <div class="board-card${i===0?' pres':''}">
-      <div class="board-avatar">${m.photo?`<img src="${m.photo}" alt="${m.th}">`:(i===0?'🎼':'🎵')}</div>
+      <div class="board-avatar">${m.photo?`<img src="${m.photo}" alt="${m.th}" onerror="this.parentElement.innerHTML='${i===0?'🎼':'🎵'}'">`:( i===0?'🎼':'🎵')}</div>
       <div class="bname-th">${m.th}</div>
       <div class="bname-en">${m.en}</div>
       <div class="brole">${m.role}</div>
     </div>`).join('');
 }
 async function renderEvents(){
-  const events = await sbGet('events', 'tcda_events');
+  // อ่านจาก localStorage ก่อน (admin บันทึกไว้ที่นี่)
+  let events = JSON.parse(localStorage.getItem('tcda_events') || 'null');
+  if (!events || !events.length) {
+    events = await sbGet('events', 'tcda_events');
+  }
   const el=document.getElementById('events-list');
   if(!events.length){el.innerHTML='<div class="no-events"><div class="no-events-icon">🗓️</div><h3><span class="th">ยังไม่มีกิจกรรมที่ประกาศ</span><span class="en">No Events Yet</span></h3><p><span class="th">กิจกรรมจะประกาศที่นี่</span><span class="en">Upcoming events will appear here.</span></p></div>';return;}
   el.innerHTML=events.map(e=>{
     const d=e.date?new Date(e.date):null;
+    // รองรับทั้ง field แบบเก่า (titleTh) และแบบใหม่ (title_th)
+    const titleTh = e.title_th || e.titleTh || '';
+    const descTh  = e.desc_th  || e.descTh  || '';
     return`<div class="event-card">
-      ${e.photo?`<div style="width:120px;flex-shrink:0;overflow:hidden;"><img src="${e.photo}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>`:`<div class="event-date-col"><div class="event-day">${d?d.getDate():'—'}</div><div class="event-mon">${d?d.toLocaleString('en',{month:'short'}):'—'}</div></div>`}
+      ${e.photo?`<div style="width:120px;flex-shrink:0;overflow:hidden;"><img src="${e.photo}" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.remove()"></div>`:`<div class="event-date-col"><div class="event-day">${d?d.getDate():'—'}</div><div class="event-mon">${d?d.toLocaleString('en',{month:'short'}):'—'}</div></div>`}
       <div class="event-body">
         ${e.photo&&d?`<div class="event-venue-t" style="margin-bottom:4px;">📅 ${d.getDate()} ${d.toLocaleString('th',{month:'short',year:'numeric'})}</div>`:''}
-        <div class="event-title-t">${e.titleTh}</div>
-        <div class="event-desc-t">${e.descTh||''}</div>
+        <div class="event-title-t">${titleTh}</div>
+        <div class="event-desc-t">${descTh}</div>
         ${e.venue?`<div class="event-venue-t">📍 ${e.venue}</div>`:''}
       </div>
     </div>`;
@@ -1169,20 +1184,4 @@ function loadLogo() {
     img.style.opacity = '1';
   });
 }
-// RULES MODAL
-function openRules(){ document.getElementById('rulesModal').classList.add('open'); document.body.style.overflow='hidden'; }
-function closeRules(){ document.getElementById('rulesModal').classList.remove('open'); document.body.style.overflow=''; }
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeRules(); });
-// INIT
-loadLogo(); renderBoard(); renderEvents();
-// Load FB URL from admin settings
-const fbUrl = localStorage.getItem('tcda_fb_url');
-if (fbUrl) { const el = document.getElementById('fb-footer-link'); if(el) el.href = fbUrl; }
-// Load PromptPay number
-const pp = localStorage.getItem('tcda_promptpay');
-if (pp) { const el = document.getElementById('promptpay-number'); if(el) el.textContent = pp; }
-// Check Supabase auth session
-checkAuthSession();
-</script>
-</body>
-</html>
+// RULES

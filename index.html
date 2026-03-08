@@ -870,7 +870,8 @@
 // ══════════════════════════════════════════
 const SB_URL = 'https://mfzuwjhptgcbzgvntubm.supabase.co';   // e.g. 'https://xxxx.supabase.co'
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1menV3amhwdGdjYnpndm50dWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4Njg2NjIsImV4cCI6MjA4ODQ0NDY2Mn0.0ZmoDrbf4Ku5UEMvwuQwBJ-Vy8xVh_U66n6xuA12A58';   // anon/public key
-
+const sb = supabase.createClient(supabaseUrl, supabaseKey)
+  
 let sb = null;
 if (SB_URL && SB_KEY) {
   sb = supabase.createClient(SB_URL, SB_KEY);
@@ -933,6 +934,56 @@ async function submitMem(){
   btn.disabled = false; btn.textContent = 'ส่งใบสมัคร';
   document.getElementById('memFormWrap').style.display='none';
   document.getElementById('memSuccess').style.display='block';
+}
+// EVENTS
+async function loadEvents() {
+  const container = document.getElementById('events-list'); // แก้ ID ให้ตรงกับ HTML ของคุณ
+  if (!container) return;
+
+  try {
+    const { data: events, error } = await sb.from('events').select('*').order('date', { ascending: true });
+    if (error) throw error;
+
+    if (!events || events.length === 0) {
+      container.innerHTML = '<p style="text-align:center;padding:3rem;">ยังไม่มีกิจกรรมในขณะนี้</p>';
+      return;
+    }
+
+    container.innerHTML = events.map(ev => `
+      <div class="event-card">
+        <div class="event-img-wrap">
+          <img src="${ev.image || ''}" alt="${ev.title}">
+          <div class="event-date-badge">${new Date(ev.date).toLocaleDateString('th-TH', {day:'numeric', month:'short'})}</div>
+        </div>
+        <div class="event-content">
+          <h3 class="event-title">${ev.title}</h3>
+          <p class="event-desc">${ev.desc || ''}</p>
+        </div>
+      </div>
+    `).join('');
+  } catch (err) { console.error(err); }
+}
+
+// BOARD
+
+  async function loadBoard() {
+  const container = document.getElementById('board-grid'); // แก้ ID ให้ตรงกับ HTML ของคุณ
+  if (!container) return;
+
+  try {
+    const { data: board, error } = await sb.from('board').select('*').order('sort_order', { ascending: true });
+    if (error) throw error;
+
+    container.innerHTML = board.map(m => `
+      <div class="board-card">
+        <img src="${m.image || ''}" alt="${m.name}">
+        <div class="board-info">
+          <h4>${m.name}</h4>
+          <p>${m.position}</p>
+        </div>
+      </div>
+    `).join('');
+  } catch (err) { console.error(err); }
 }
 // LOGIN
 async function doLogin(){

@@ -995,7 +995,13 @@ function startEditEvent(id, title_th, title_en, date, venue, register_url, desc_
 async function addEvent() {
   const get = id => (document.getElementById(id) || {}).value || '';
   const titleTb = get('ev-title-th');
+  const evDate = get('ev-date');
+  const evVenue = get('ev-venue');
+  const descTh = get('ev-desc-th');
   if (!titleTb) return alert('กรุณาใส่ชื่อกิจกรรม');
+  if (!evDate) return alert('กรุณาใส่วันที่กิจกรรม');
+  if (!evVenue) return alert('กรุณาใส่สถานที่กิจกรรม');
+  if (!descTh) return alert('กรุณาใส่รายละเอียดกิจกรรม (ไทย)');
 
   const photoInput = document.getElementById('ev-photo');
   let photoUrl = '';
@@ -1008,10 +1014,10 @@ async function addEvent() {
   const base = {
     title_tb: titleTb,
     title_en: get('ev-title-en'),
-    date: get('ev-date'),
-    venue: get('ev-venue'),
+    date: evDate,
+    venue: evVenue,
     register_url: get('ev-register-url'),
-    desc_th: get('ev-desc-th'),
+    desc_th: descTh,
     desc_en: get('ev-desc-en')
   };
 

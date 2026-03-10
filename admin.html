@@ -948,7 +948,7 @@ async function renderEvents() {
     <div class="item-card">
       ${e.photo ? `<img src="${e.photo}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:60px;height:60px;border-radius:8px;background:var(--bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem">📅</div>'}
       <div style="flex:1">
-        <strong>${e.title_th || ''}</strong><br>
+        <strong>${e.title_tb || e.title_th || ''}</strong><br>
         <small style="color:var(--muted)">${e.date || ''} · ${e.venue || ''}</small>
         ${e.register_url ? `<br><a href="${e.register_url}" target="_blank" style="font-size:12px;color:var(--sky)">🔗 ${e.register_url}</a>` : ''}
         ${e.photo ? `<br><small style="color:var(--mint)">☁️ Supabase Storage</small>` : ''}
@@ -961,7 +961,7 @@ async function renderEvents() {
 function startEditEventByIndex(index) {
   const e = eventsCache[index];
   if (!e) return;
-  startEditEvent(e.id, e.title_th || '', e.title_en || '', e.date || '', e.venue || '', e.register_url || '', e.desc_th || '', e.desc_en || '', e.photo || '');
+  startEditEvent(e.id, e.title_tb || e.title_th || '', e.title_en || '', e.date || '', e.venue || '', e.register_url || '', e.desc_th || '', e.desc_en || '', e.photo || '');
 }
 
 function deleteEventByIndex(index) {
@@ -994,8 +994,8 @@ function startEditEvent(id, title_th, title_en, date, venue, register_url, desc_
 
 async function addEvent() {
   const get = id => (document.getElementById(id) || {}).value || '';
-  const title_th = get('ev-title-th');
-  if (!title_th) return alert('กรุณาใส่ชื่อกิจกรรม');
+  const titleTb = get('ev-title-th');
+  if (!titleTb) return alert('กรุณาใส่ชื่อกิจกรรม');
 
   const photoInput = document.getElementById('ev-photo');
   let photoUrl = '';
@@ -1006,7 +1006,7 @@ async function addEvent() {
   }
 
   const base = {
-    title_th,
+    title_tb: titleTb,
     title_en: get('ev-title-en'),
     date: get('ev-date'),
     venue: get('ev-venue'),
@@ -1049,7 +1049,7 @@ async function deleteEvent(eventRow) {
   const photoUrl = eventRow.photo || '';
   // ลบรูปจาก Storage ด้วย
   if (photoUrl) await deleteFromStorage(photoUrl);
-  await sbDelete('events', 'tcda_events', eventRow, ['created_at', 'title_th', 'date', 'venue']);
+  await sbDelete('events', 'tcda_events', eventRow, ['created_at', 'title_tb', 'title_th', 'date', 'venue']);
   await renderEvents();
   await renderDashboard();
 }

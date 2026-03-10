@@ -840,6 +840,37 @@ async function sbUpdate(table, lsKey, id, updates) {
         setLocalOnly(lsKey, false);
         return;
       }
+
+      // board ใช้ค่า default local บ่อย: ถ้า update ไม่เจอแถวใน cloud ให้สร้างแถวใหม่แทน
+      if (table === 'board') {
+        const local = getData(lsKey, []);
+        const localRow = local.find(r => String(r.id) === String(id));
+        if (localRow) {
+          const payload = {
+            th: localRow.th || localRow.name_th || '',
+            en: localRow.en || localRow.name_en || '',
+            role: localRow.role || '',
+            photo: localRow.photo || '',
+            ...updates,
+            created_at: localRow.created_at || new Date().toISOString()
+          };
+          const { data: insData, error: insErr } = await sb.from(table).insert([payload]).select('*');
+          if (!insErr && Array.isArray(insData) && insData.length > 0) {
+            const created = insData[0];
+            const i = local.findIndex(r => String(r.id) === String(id));
+            if (i >= 0) {
+              local[i] = {
+                ...local[i],
+                ...created
+              };
+              setData(lsKey, local);
+            }
+            setLocalOnly(lsKey, false);
+            return;
+          }
+        }
+      }
+
       setLocalOnly(lsKey, true);
     } catch(e) { console.warn('sbUpdate error:', e); setLocalOnly(lsKey, true); }
   }
@@ -1197,7 +1228,32 @@ const defaultBoard = [
   {id:10,th:'อ.ภาธร สวัสดิสุข',en:'Patorn Sawatdisuk',role:'กรรมการ / Director',photo:''},
 ];
 
+async function ensureBoardSeeded() {
+  if (!sb) return;
+  try {
+    const { data: existing, error } = await sb.from('board').select('id').limit(1);
+    if (error || (existing && existing.length > 0)) return;
+
+    const local = getData('tcda_board', defaultBoard);
+    const source = (Array.isArray(local) && local.length > 0) ? local : defaultBoard;
+    const payload = source.map((m, idx) => ({
+      th: m.th || m.name_th || '',
+      en: m.en || m.name_en || '',
+      role: m.role || 'กรรมการ / Director',
+      photo: m.photo || '',
+      sort_order: idx + 1,
+      created_at: m.created_at || new Date().toISOString()
+    }));
+
+    const { error: insErr } = await sb.from('board').insert(payload);
+    if (!insErr) setLocalOnly('tcda_board', false);
+  } catch (e) {
+    console.warn('ensureBoardSeeded error:', e);
+  }
+}
+
 async function renderBoard() {
+  await ensureBoardSeeded();
   const board = await sbFetch('board', 'tcda_board', defaultBoard);
   const el = document.getElementById('board-editor');
   if (!el) return;

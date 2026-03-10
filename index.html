@@ -1351,21 +1351,21 @@ async function loadBoard() {
     if (!container) return;
 
     const defaultBoard = [
-        {id:1,th:'อ.ดร.ภาวศุทธิ์ พิริยะพงษ์รัตน์',en:'Dr. Pawasut Jodi Piriyapongrat',role:'นายกสมาคม / President',photo:''},
-        {id:2,th:'อ.สถิต สุกจงชัยพฤกษ์',en:'Sathit Sukchongchaipreuk',role:'อุปนายกสมาคม / Vice President',photo:''},
-        {id:3,th:'อ.ศิโรวุฒิ ศรีนิเทศวาทิน',en:'Sirowut Srinitedwatin',role:'กรรมการ / Director',photo:''},
-        {id:4,th:'อ.ณัฐธิตา วงศ์พรหม',en:'Natthita Wongprom',role:'กรรมการ / Director',photo:''},
-        {id:5,th:'อ.ดร.อภิญญ์พร ชัยวานิชศิริ',en:'Apinporn Chaiwanichsiri',role:'กรรมการ / Director',photo:''},
-        {id:6,th:'อ.ดร.ยสวันต์ มีทองคำ',en:'Yotsawan Meetongkham',role:'กรรมการ / Director',photo:''},
-        {id:7,th:'อ.ดร.ดลหทัย อินทวงศ์',en:'Dolhathai Intawong',role:'กรรมการ / Director',photo:''},
-        {id:8,th:'รวิอร สวัสดิสุข',en:'Rawior Sawatdisuk',role:'กรรมการ / Director',photo:''},
-        {id:9,th:'อ.สุพิชชา กาลศิริศิลป์',en:'Supitcha Kalasirisil',role:'กรรมการ / Director',photo:''},
-        {id:10,th:'อ.ภาธร สวัสดิสุข',en:'Patorn Sawatdisuk',role:'กรรมการ / Director',photo:''},
+        {id:1,th:'อ.ดร.ภาวศุทธิ์ พิริยะพงษ์รัตน์',en:'Dr. Pawasut Jodi Piriyapongrat',role:'นายกสมาคม / President',photo:'',sort_order:1},
+        {id:2,th:'อ.สถิต สุกจงชัยพฤกษ์',en:'Sathit Sukchongchaipreuk',role:'อุปนายกสมาคม / Vice President',photo:'',sort_order:2},
+        {id:3,th:'อ.ศิโรวุฒิ ศรีนิเทศวาทิน',en:'Sirowut Srinitedwatin',role:'กรรมการ / Director',photo:'',sort_order:3},
+        {id:4,th:'อ.ณัฐธิตา วงศ์พรหม',en:'Natthita Wongprom',role:'กรรมการ / Director',photo:'',sort_order:4},
+        {id:5,th:'อ.ดร.อภิญญ์พร ชัยวานิชศิริ',en:'Apinporn Chaiwanichsiri',role:'กรรมการ / Director',photo:'',sort_order:5},
+        {id:6,th:'อ.ดร.ยสวันต์ มีทองคำ',en:'Yotsawan Meetongkham',role:'กรรมการ / Director',photo:'',sort_order:6},
+        {id:7,th:'อ.ดร.ดลหทัย อินทวงศ์',en:'Dolhathai Intawong',role:'กรรมการ / Director',photo:'',sort_order:7},
+        {id:8,th:'รวิอร สวัสดิสุข',en:'Rawior Sawatdisuk',role:'กรรมการ / Director',photo:'',sort_order:8},
+        {id:9,th:'อ.สุพิชชา กาลศิริศิลป์',en:'Supitcha Kalasirisil',role:'กรรมการ / Director',photo:'',sort_order:9},
+        {id:10,th:'อ.ภาธร สวัสดิสุข',en:'Patorn Sawatdisuk',role:'กรรมการ / Director',photo:'',sort_order:10},
     ];
 
     let members = [];
     try {
-        const { data, error } = await sb.from('board').select('*').order('created_at', { ascending: true });
+        const { data, error } = await sb.from('board').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: true });
         if (!error && data && data.length > 0) {
             members = data;
         } else {
@@ -1377,6 +1377,15 @@ async function loadBoard() {
         const saved = localStorage.getItem('tcda_board');
         members = saved ? JSON.parse(saved) : defaultBoard;
     }
+
+    members = [...members].sort((a, b) => {
+        const sa = Number.isFinite(Number(a.sort_order)) ? Number(a.sort_order) : 999999;
+        const sb = Number.isFinite(Number(b.sort_order)) ? Number(b.sort_order) : 999999;
+        if (sa !== sb) return sa - sb;
+        const ca = new Date(a.created_at || 0).getTime();
+        const cb = new Date(b.created_at || 0).getTime();
+        return ca - cb;
+    });
 
     container.innerHTML = members.map((m, i) => {
         const nameTh = m.th || m.name_th || '';
@@ -1507,7 +1516,53 @@ function setLang(lang) {
     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
     const activeBtn = document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`);
     if (activeBtn) activeBtn.classList.add('active');
+    applyMembershipFormLang(lang);
     localStorage.setItem('tcda_lang', lang);
+}
+
+function applyMembershipFormLang(lang) {
+    const isEn = lang === 'en';
+    const setPh = (id, th, en) => {
+        const el = document.getElementById(id);
+        if (el) el.placeholder = isEn ? en : th;
+    };
+
+    setPh('f-fname', 'นาย/นางสาว ชื่อ นามสกุล', 'Mr./Ms./Mrs. Full Name');
+    setPh('f-phone', '08x-xxx-xxxx', '08x-xxx-xxxx');
+    setPh('f-email', 'email@example.com', 'email@example.com');
+    setPh('f-idcard', 'x-xxxx-xxxxx-xx-x', 'x-xxxx-xxxxx-xx-x');
+    setPh('f-address', 'บ้านเลขที่ ซอย ถนน แขวง เขต จังหวัด รหัสไปรษณีย์', 'House No., Street, District, Province, Postal Code');
+
+    const typeSelect = document.getElementById('f-type');
+    if (typeSelect) {
+        const labels = {
+            student: { th: 'นักเรียน นักศึกษา', en: 'Student' },
+            conductor: { th: 'ผู้อำนวยเพลงขับร้องประสานเสียง', en: 'Choral Conductor' },
+            teacher: { th: 'ครูดนตรี', en: 'Music Teacher' },
+            government: { th: 'ข้าราชการ', en: 'Government Officer' },
+            other: { th: 'อื่นๆ', en: 'Other' }
+        };
+        Array.from(typeSelect.options).forEach(opt => {
+            const item = labels[opt.value];
+            if (item) opt.textContent = isEn ? item.en : item.th;
+        });
+    }
+
+    const regionSelect = document.getElementById('f-region');
+    if (regionSelect) {
+        const labels = {
+            'กรุงเทพมหานคร': { th: 'กรุงเทพมหานคร', en: 'Bangkok' },
+            'ภาคเหนือ': { th: 'ภาคเหนือ', en: 'Northern' },
+            'ภาคกลาง': { th: 'ภาคกลาง', en: 'Central' },
+            'ภาคตะวันออก': { th: 'ภาคตะวันออก', en: 'Eastern' },
+            'ภาคตะวันตก': { th: 'ภาคตะวันตก', en: 'Western' },
+            'ภาคใต้': { th: 'ภาคใต้', en: 'Southern' }
+        };
+        Array.from(regionSelect.options).forEach(opt => {
+            const item = labels[opt.value];
+            if (item) opt.textContent = isEn ? item.en : item.th;
+        });
+    }
 }
 
 function showAuthInlineMessage(msg, isError = false) {
@@ -1728,6 +1783,9 @@ function showMembersArea(member) {
     const greet = document.getElementById('memberGreet');
     if (greet) greet.textContent = `ยินดีต้อนรับ, ${member.name || member.email}`;
 
+    // Reset members tabs to first tab on each login/session restore
+    showMemTab('news', document.querySelector('.mem-tab'));
+
     loadNews();
     loadResources();
     loadDirectory();
@@ -1744,10 +1802,10 @@ function doLogout() {
 
 // --- 11. Member Tabs ---
 function showMemTab(tabName, btn) {
-    document.querySelectorAll('.mem-tab-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.mem-section').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.mem-tab').forEach(el => el.classList.remove('active'));
 
-    const target = document.getElementById('tab-' + tabName);
+    const target = document.getElementById('mem-' + tabName);
     if (target) target.style.display = 'block';
     if (btn) btn.classList.add('active');
 }

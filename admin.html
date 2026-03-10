@@ -666,18 +666,66 @@ async function sbAdd(table, lsKey, row) {
     } catch(e) { console.warn('sbAdd error:', e); setLocalOnly(lsKey, true); }
   }
 }
-async function sbDelete(table, lsKey, id) {
+async function sbDelete(table, lsKey, rowOrId, fallbackKeys = []) {
+  const row = (rowOrId && typeof rowOrId === 'object') ? rowOrId : null;
+  const id = row ? row.id : rowOrId;
+  const keys = Array.from(new Set(['id', ...fallbackKeys]));
+
+  const matchesRow = (record) => {
+    if (!record) return false;
+    for (const key of keys) {
+      const a = record?.[key];
+      const b = row?.[key];
+      if (a !== undefined && b !== undefined && String(a) === String(b)) return true;
+    }
+    if (id !== undefined && id !== null && record?.id !== undefined && record?.id !== null) {
+      return String(record.id) === String(id);
+    }
+    return false;
+  };
+
   if (sb) {
     try {
-      const { data, error } = await sb.from(table).delete().eq('id', id).select('id');
-      if (!error && Array.isArray(data) && data.length > 0) {
-        setLocalOnly(lsKey, false);
-        return;
+      let deleted = [];
+      let error = null;
+
+      if (id !== undefined && id !== null) {
+        const res = await sb.from(table).delete().eq('id', id).select('id');
+        deleted = res.data || [];
+        error = res.error || null;
       }
+
+      if ((!deleted || deleted.length === 0) && row) {
+        for (const key of keys) {
+          const val = row[key];
+          if (val === undefined || val === null || key === 'id') continue;
+          const res = await sb.from(table).delete().eq(key, val).select('id');
+          if (!res.error && Array.isArray(res.data) && res.data.length > 0) {
+            deleted = res.data;
+            error = null;
+            break;
+          }
+          error = res.error || error;
+        }
+      }
+
+      if (Array.isArray(deleted) && deleted.length > 0) {
+        setLocalOnly(lsKey, false);
+      } else if (error) {
+        console.warn('sbDelete Supabase error (fallback local):', error.message || error);
+        setLocalOnly(lsKey, true);
+      }
+    } catch(e) {
+      console.warn('sbDelete error:', e);
       setLocalOnly(lsKey, true);
-    } catch(e) { console.warn('sbDelete error:', e); setLocalOnly(lsKey, true); }
+    }
   }
-  setData(lsKey, getData(lsKey, []).filter(r => r.id != id));
+
+  const local = getData(lsKey, []);
+  const next = row
+    ? local.filter(record => !matchesRow(record))
+    : local.filter(record => String(record?.id) !== String(id));
+  setData(lsKey, next);
 }
 async function sbUpdate(table, lsKey, id, updates) {
   if (sb) {
@@ -862,12 +910,13 @@ async function updateApp(id, status) {
 function deleteAppByIndex(index) {
   const app = applicationsCache[index];
   if (!app) return;
-  deleteApp(app.id);
+  deleteApp(app);
 }
-async function deleteApp(id) {
+async function deleteApp(app) {
   if (!confirm('ลบใบสมัครนี้?')) return;
-  await sbDelete('members', 'tcda_members', id);
-  renderApplications(); renderDashboard();
+  await sbDelete('members', 'tcda_members', app, ['email', 'created_at', 'name']);
+  await renderApplications();
+  await renderDashboard();
 }
 function exportCSV() {
   const apps = getData('tcda_members', []);
@@ -918,7 +967,7 @@ function startEditEventByIndex(index) {
 function deleteEventByIndex(index) {
   const e = eventsCache[index];
   if (!e) return;
-  deleteEvent(e.id, e.photo || '');
+  deleteEvent(e);
 }
 
 function startEditEvent(id, title_th, title_en, date, venue, register_url, desc_th, desc_en, photo) {
@@ -993,12 +1042,16 @@ async function addEvent() {
   if (evTable) evTable.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-async function deleteEvent(id, photoUrl) {
+async function deleteEvent(eventRow) {
+  if (!eventRow) return;
   if (!confirm('ลบกิจกรรมนี้?')) return;
+  const id = eventRow.id;
+  const photoUrl = eventRow.photo || '';
   // ลบรูปจาก Storage ด้วย
   if (photoUrl) await deleteFromStorage(photoUrl);
-  await sbDelete('events', 'tcda_events', id);
-  renderEvents();
+  await sbDelete('events', 'tcda_events', eventRow, ['created_at', 'title_th', 'date', 'venue']);
+  await renderEvents();
+  await renderDashboard();
 }
 
 function clearEventForm() {

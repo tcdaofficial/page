@@ -1202,8 +1202,8 @@ async function loadEvents() {
       const fullDateTh = d ? d.toLocaleDateString('th-TH', { day:'numeric', month:'long', year:'numeric' }) : 'รอประกาศวัน';
       const fullDateEn = d ? d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : 'Date TBA';
 
-      const titleTh = escapeHtml(e.title_th || e.title || '');
-      const titleEn = escapeHtml(e.title_en || e.title_th || e.title || '');
+      const titleTh = escapeHtml(e.title_tb || e.title_th || e.title || '');
+      const titleEn = escapeHtml(e.title_en || e.title_tb || e.title_th || e.title || '');
       const descTh = escapeHtml(e.desc_th || e.description || '');
       const descEn = escapeHtml(e.desc_en || '');
       const venue = escapeHtml(e.venue || '');
@@ -1286,8 +1286,8 @@ function openEventDetailByIndex(idx) {
 
     openEventDetail(
       String(e.photo || ''),
-      String(e.title_th || e.title || ''),
-      String(e.title_en || e.title_th || e.title || ''),
+      String(e.title_tb || e.title_th || e.title || ''),
+      String(e.title_en || e.title_tb || e.title_th || e.title || ''),
       fullDateTh,
       fullDateEn,
       String(e.venue || ''),

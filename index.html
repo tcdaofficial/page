@@ -137,8 +137,12 @@
     content:''; position:absolute; bottom:-40px; right:-40px;
     width:160px; height:160px; border-radius:50%; background:rgba(122,30,30,0.28);
   }
-  .about-visual img { width:110px; margin-top:auto; position:relative; order:2; }
-  .about-visual-text { color:rgba(255,255,255,0.78); font-size:0.88rem; line-height:1.9; position:relative; order:1; flex:1; }
+  .about-visual img {
+    width:130px; margin:0 0 1.8rem; position:relative; order:1;
+    filter: grayscale(1) contrast(2) brightness(1.7) invert(1);
+    mix-blend-mode: screen;
+  }
+  .about-visual-text { color:rgba(255,255,255,0.78); font-size:0.88rem; line-height:1.9; position:relative; order:2; }
   .about-visual-text strong { color:var(--gold); }
   .about-text p { color:var(--muted); line-height:1.9; font-size:0.92rem; margin-bottom:1rem; }
   .about-text h3 { font-family:'Libre Baskerville','Sarabun',serif; font-size:1.45rem; font-weight:600; color:var(--navy); margin:1.5rem 0 0.7rem; }
@@ -156,7 +160,17 @@
   }
 
   /* EVENTS */
-  #events { background:var(--cream); }
+  #events {
+    background:
+      radial-gradient(1200px 300px at 18% -10%, rgba(225,92,107,0.11) 0%, transparent 60%),
+      radial-gradient(1100px 300px at 88% -10%, rgba(58,123,213,0.12) 0%, transparent 62%),
+      var(--cream);
+  }
+  #events-list {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(260px,1fr));
+    gap:1.35rem;
+  }
   .no-events {
     text-align:center; padding:3.5rem 2rem; background:#fff;
     border-radius:14px; border:2px dashed var(--border);
@@ -164,14 +178,256 @@
   .no-events-icon { font-size:2.2rem; margin-bottom:0.8rem; }
   .no-events h3 { color:var(--navy); margin-bottom:0.4rem; font-size:1rem; }
   .no-events p { color:var(--muted); font-size:0.85rem; }
-  .event-card { background:#fff; border-radius:14px; overflow:hidden; box-shadow:var(--shadow); margin-bottom:1rem; display:flex; }
-  .event-date-col { background:var(--navy); width:76px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:1rem; }
-  .event-day { font-size:1.7rem; font-weight:700; color:#fff; line-height:1; }
-  .event-mon { font-size:0.68rem; color:var(--gold); text-transform:uppercase; font-weight:600; margin-top:2px; }
-  .event-body { padding:1.1rem 1.4rem; }
-  .event-title-t { font-weight:700; color:var(--navy); margin-bottom:0.3rem; font-size:0.95rem; }
-  .event-desc-t { font-size:0.84rem; color:var(--muted); line-height:1.7; }
-  .event-venue-t { font-size:0.78rem; color:var(--burgundy); margin-top:0.4rem; font-weight:500; }
+  .event-post {
+    background:linear-gradient(180deg,#ffffff 0%, #f8f9fd 100%);
+    border:1px solid rgba(27,42,74,0.1);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 14px 34px rgba(15,23,42,0.1);
+    transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  .event-post::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.56);
+  }
+  .event-post:hover {
+    transform:translateY(-6px);
+    box-shadow:0 22px 44px rgba(15,23,42,0.16);
+    border-color:rgba(122,30,30,0.24);
+  }
+  .event-poster-wrap {
+    position:relative;
+    aspect-ratio:3/4;
+    width:100%;
+    height:auto;
+    max-height:470px;
+    margin:0;
+    border-radius:0;
+    overflow:hidden;
+    background:#dbe3f3;
+  }
+  .event-poster {
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    display:block;
+    background:linear-gradient(180deg,#eaf0fb 0%, #e1e8f7 100%);
+    cursor:zoom-in;
+    padding:9px;
+  }
+  .event-poster-placeholder {
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--navy);
+    font-size:2.1rem;
+    font-weight:700;
+    background:linear-gradient(130deg, #e8eefb 0%, #f6f8ff 100%);
+  }
+  .event-date-row {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:0.56rem;
+    color:#1d2f56;
+    font-size:0.75rem;
+    font-weight:800;
+    background:linear-gradient(180deg,#f4f7fd 0%, #e9eefb 100%);
+    border:1px solid #ccd7ee;
+    border-radius:999px;
+    padding:5px 12px;
+    box-shadow:0 3px 10px rgba(27,42,74,0.1);
+  }
+  .event-content {
+    padding:0.84rem 0.9rem 0.95rem;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+  .event-title {
+    font-size:1.06rem;
+    line-height:1.34;
+    font-weight:900;
+    letter-spacing:0.01em;
+    color:var(--navy);
+    margin-bottom:0.42rem;
+  }
+  .event-meta-line {
+    display:flex;
+    align-items:center;
+    gap:0.55rem;
+    flex-wrap:wrap;
+    margin-bottom:0.42rem;
+    color:var(--muted);
+    font-size:0.76rem;
+    font-weight:600;
+  }
+  .event-chip {
+    display:inline-flex;
+    align-items:center;
+    gap:0.3rem;
+    background:linear-gradient(180deg,#f4f6fb 0%, #edf1fa 100%);
+    border:1px solid #d5deef;
+    border-radius:999px;
+    padding:5px 11px;
+    color:var(--navy);
+    font-size:0.69rem;
+    font-weight:700;
+  }
+  .event-desc {
+    color:var(--muted);
+    font-size:0.8rem;
+    line-height:1.68;
+    display:block;
+    overflow:hidden;
+    max-height:4.9em;
+    transition:max-height .22s ease;
+    margin-top:0.14rem;
+  }
+  .event-desc.expanded {
+    max-height:520px;
+  }
+  .event-more {
+    margin-top:10px;
+    background:linear-gradient(180deg,#f6f8fc 0%, #eef3fb 100%);
+    border:1px solid #cdd9ee;
+    border-radius:999px;
+    padding:8px 12px;
+    color:var(--navy);
+    font-size:0.77rem;
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:none;
+    transition:all .2s ease;
+  }
+  .event-more:hover {
+    background:linear-gradient(180deg,#eef3fb 0%, #e4ecfa 100%);
+    border-color:#b7c8ea;
+  }
+  .event-actions {
+    margin-top:10px;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+    align-items:center;
+  }
+  .event-apply {
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(120deg,#d5a228 0%, #c8962a 52%, #b98620 100%);
+    color:var(--navy);
+    border-radius:999px;
+    padding:9px 12px;
+    font-size:0.81rem;
+    font-weight:800;
+    text-decoration:none;
+    transition:all .2s ease;
+    box-shadow:0 8px 20px rgba(200,150,42,0.33);
+  }
+  .event-apply:hover {
+    filter:brightness(1.04);
+    transform:translateY(-2px);
+    box-shadow:0 12px 24px rgba(200,150,42,0.36);
+  }
+  .event-img-modal {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:2200;
+    background:rgba(8,13,29,0.9);
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+  }
+  .event-img-modal.open { display:flex; }
+  .event-img-wrap {
+    position:relative;
+    width:min(96vw,1240px);
+    max-height:90vh;
+    background:#fff;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 28px 78px rgba(0,0,0,0.5);
+    display:grid;
+    grid-template-columns:minmax(320px,62%) minmax(0,1fr);
+  }
+  .event-img-wrap img {
+    width:100%;
+    height:100%;
+    max-height:90vh;
+    object-fit:contain;
+    background:linear-gradient(180deg,#edf2fb 0%, #dce4f5 100%);
+    padding:10px;
+  }
+  .event-detail-pane {
+    padding:18px 18px 20px;
+    overflow:auto;
+    border-left:1px solid #e5e7eb;
+    min-width:0;
+    background:#fff;
+  }
+  .event-detail-title { color:var(--navy); font-size:1.2rem; font-weight:900; line-height:1.33; margin-bottom:9px; }
+  .event-detail-date { color:var(--navy); font-size:0.84rem; font-weight:700; margin-bottom:8px; }
+  .event-detail-venue { color:var(--muted); font-size:0.82rem; font-weight:600; margin-bottom:10px; }
+  .event-detail-desc { color:#4b5563; font-size:0.88rem; line-height:1.72; white-space:pre-wrap; }
+  .event-detail-desc {
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+  .event-detail-desc .th,
+  .event-detail-desc .en {
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+  .event-img-close {
+    position:absolute;
+    right:10px;
+    top:10px;
+    width:34px;
+    height:34px;
+    border:none;
+    border-radius:50%;
+    background:#fff;
+    color:#111827;
+    font-size:18px;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(0,0,0,0.35);
+  }
+  .event-detail-register {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    border-radius:999px;
+    padding:10px 16px;
+    font-size:0.82rem;
+    font-weight:800;
+    color:var(--navy);
+    background:linear-gradient(120deg,#d5a228 0%, #c8962a 52%, #b98620 100%);
+    box-shadow:0 8px 20px rgba(200,150,42,0.33);
+    margin-top:8px;
+  }
+  .event-detail-meta-card {
+    border:1px solid #e2e8f4;
+    border-radius:12px;
+    background:#f8fafe;
+    padding:10px 12px;
+    margin-bottom:8px;
+    color:#41516e;
+    font-size:0.82rem;
+    line-height:1.7;
+  }
 
   /* BOARD */
   #board { background:#fff; }
@@ -210,6 +466,10 @@
   .form-card { background:var(--navy); border-radius:16px; padding:2rem; }
   .form-card h3 { font-family:'Libre Baskerville','Sarabun',serif; color:#fff; font-size:1.55rem; font-weight:600; margin-bottom:0.3rem; }
   .form-card > p { color:rgba(255,255,255,0.62); font-size:0.83rem; margin-bottom:1.5rem; line-height:1.7; }
+  .form-card .rules-note { color:rgba(255,255,255,0.88); font-size:0.9rem; line-height:1.75; letter-spacing:0.01em; }
+  .form-card .rules-note .th { font-family:'Sarabun',sans-serif; font-weight:500; }
+  .form-card .rules-note .en { font-family:'Libre Baskerville',serif; font-style:italic; }
+  .form-card .rules-note a { color:var(--gold); font-weight:700; text-decoration:underline; text-underline-offset:2px; }
   .fg { margin-bottom:0.9rem; }
   .fg label { display:block; color:rgba(255,255,255,0.72); font-size:0.8rem; margin-bottom:4px; }
   .fg input,.fg select {
@@ -316,7 +576,11 @@
   footer { background:var(--navy); color:rgba(255,255,255,0.62); padding:3rem 2rem 1.5rem; }
   .footer-inner { max-width:1080px; margin:0 auto; }
   .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr; gap:3rem; margin-bottom:2rem; }
-  .footer-brand img { height:50px; object-fit:contain; margin-bottom:1rem; filter:brightness(0) invert(1); opacity:0.85; }
+  .footer-brand img {
+    height:62px; object-fit:contain; margin-bottom:1rem; opacity:1;
+    filter: grayscale(1) contrast(2) brightness(1.7) invert(1);
+    mix-blend-mode: screen;
+  }
   .footer-brand p { font-size:0.83rem; line-height:1.85; }
   .footer-col h4 { color:#fff; font-weight:600; margin-bottom:0.9rem; font-size:0.88rem; }
   .footer-col a { display:block; color:rgba(255,255,255,0.52); text-decoration:none; font-size:0.83rem; margin-bottom:0.4rem; transition:color .2s; }
@@ -380,6 +644,13 @@
     .about-grid,.mem-grid{grid-template-columns:1fr;}
     .footer-grid{grid-template-columns:1fr;}
     .frow2{grid-template-columns:1fr;}
+    #events-list{grid-template-columns:1fr;}
+    .event-img-wrap{grid-template-columns:1fr; max-height:94vh;}
+    .event-img-wrap img{max-height:52vh; padding:6px;}
+    .event-detail-pane{border-left:none; border-top:1px solid #e5e7eb; max-height:40vh;}
+  }
+  @media(max-width:1100px){
+    #events-list{grid-template-columns:repeat(2,minmax(250px,1fr));}
   }
 </style>
 </head>
@@ -482,8 +753,8 @@
   <div class="container">
     <div class="section-header fade-in">
       <div class="section-tag"><span class="th">กิจกรรม</span><span class="en">Events</span></div>
-      <h2 class="section-title"><span class="th">กิจกรรมและงานสัมมนา</span><span class="en">Events & Workshops</span></h2>
-      <p class="section-sub"><span class="th">ติดตามกิจกรรมและเวิร์กช็อปที่กำลังจะมาถึง</span><span class="en">Stay up to date with upcoming workshops and events.</span></p>
+      <h2 class="section-title"><span class="th">กิจกรรม เวิร์กช็อป และงานสัมมนา</span><span class="en">Events, Workshops & Seminars</span></h2>
+      <p class="section-sub"><span class="th">อัปเดตกิจกรรมและเวิร์กช็อปที่กำลังจะมาถึง พร้อมรายละเอียดการเข้าร่วม</span><span class="en">Stay updated on upcoming events and workshops with clear participation details.</span></p>
     </div>
     <div id="events-list" class="fade-in"></div>
   </div>
@@ -520,9 +791,9 @@
       <div class="form-card">
         <div id="memFormWrap">
           <h3><span class="th">สมัครสมาชิก</span><span class="en">Apply for Membership</span></h3>
-          <p>
-            <span class="th">โปรดอ่าน <a href="#" onclick="openRules();return false;" style="color:var(--gold);">ข้อบังคับสมาคมฯ</a> ก่อนกรอกข้อมูล</span>
-            <span class="en">Please read the <a href="#" onclick="openRules();return false;" style="color:var(--gold);">Association Rules</a> before applying.</span>
+          <p class="rules-note">
+            <span class="th">โปรดอ่าน <a href="#" onclick="openRules();return false;">ข้อบังคับสมาคมฯ</a> ก่อนกรอกข้อมูล</span>
+            <span class="en">Please read the <a href="#" onclick="openRules();return false;">Association Rules</a> before applying.</span>
           </p>
           <div class="fg"><label><span class="th">ชื่อ-สกุล (นาย/นางสาว/นาง) *</span><span class="en">Full Name (Mr./Ms./Mrs.) *</span></label><input id="f-fname" type="text" placeholder="นาย/นางสาว ชื่อ นามสกุล"></div>
           <div class="fg"><label><span class="th">วัน เดือน ปีเกิด *</span><span class="en">Date of Birth *</span></label><input id="f-dob" type="date"></div>
@@ -647,10 +918,11 @@
     <div id="loginGate" class="login-gate fade-in">
       <div class="lock-icon">🔒</div>
       <h3><span class="th">เข้าสู่ระบบ</span><span class="en">Member Login</span></h3>
-      <p><span class="th">เฉพาะสมาชิก TCDA เท่านั้น</span><span class="en">TCDA members only.</span></p>
+      <p><span class="th">เฉพาะสมาชิก TCDA เท่านั้น<br>การตั้งรหัสผ่านครั้งแรกต้องผ่านลิงก์ Invitation จากระบบ</span><span class="en">TCDA members only.<br>Initial password setup requires an invitation link from the system.</span></p>
       <div class="lf"><label><span class="th">อีเมล</span><span class="en">Email</span></label><input id="l-email" type="email" placeholder="email@example.com"></div>
       <div class="lf"><label><span class="th">รหัสผ่าน</span><span class="en">Password</span></label><input id="l-pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <button class="btn-login" onclick="doLogin()"><span class="th">เข้าสู่ระบบ</span><span class="en">Login</span></button>
+      <p id="auth-inline-msg" style="display:none;margin-top:10px;font-size:0.82rem;color:#b45309;"></p>
     </div>
 
     <!-- SET PASSWORD GATE (แสดงเมื่อกด Accept invite) -->
@@ -831,6 +1103,23 @@
   </div>
 </div>
 
+<!-- EVENT IMAGE MODAL -->
+<div class="event-img-modal" id="eventImgModal" onclick="if(event.target===this)closeEventPoster()">
+  <div class="event-img-wrap">
+    <button type="button" class="event-img-close" onclick="closeEventPoster()">✕</button>
+    <img id="eventImgModalPhoto" src="" alt="Event poster">
+    <div class="event-detail-pane">
+      <div class="event-detail-title"><span id="eventDetailTitleTh" class="th"></span><span id="eventDetailTitleEn" class="en"></span></div>
+      <div class="event-detail-meta-card">
+        <div class="event-detail-date">📅 <span id="eventDetailDateTh" class="th"></span><span id="eventDetailDateEn" class="en"></span></div>
+        <div class="event-detail-venue"><span id="eventDetailVenueTh" class="th"></span><span id="eventDetailVenueEn" class="en"></span></div>
+      </div>
+      <div class="event-detail-desc"><span id="eventDetailDescTh" class="th"></span><span id="eventDetailDescEn" class="en"></span></div>
+      <a id="eventDetailRegisterLink" class="event-detail-register" href="#membership"><span class="th">สมัครเข้าร่วม</span><span class="en">Apply Now</span></a>
+    </div>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -858,7 +1147,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2025 Thailand Choral Directors Association.</span>
+      <span>© 2026 Thailand Choral Directors Association.</span>
       <a href="admin.html">Admin Panel</a>
     </div>
   </div>
@@ -868,24 +1157,192 @@
 const SB_URL = 'https://mfzuwjhptgcbzgvntubm.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1menV3amhwdGdjYnpndm50dWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4Njg2NjIsImV4cCI6MjA4ODQ0NDY2Mn0.0ZmoDrbf4Ku5UEMvwuQwBJ-Vy8xVh_U66n6xuA12A58';
 const sb = supabase.createClient(SB_URL, SB_KEY);
+let eventDetailCache = [];
 
 // --- 1. ดึงข้อมูลกิจกรรม (Events) ---
 async function loadEvents() {
     const { data, error } = await sb.from('events').select('*').order('created_at', { ascending: false });
     const container = document.getElementById('events-list');
-    if (error || !container) return;
-    if (!data || data.length === 0) {
-        container.innerHTML = '<p style="text-align:center;color:var(--text-light)">ยังไม่มีกิจกรรมในขณะนี้</p>';
+    if (!container) return;
+    let events = data || [];
+    if (error || !events || events.length === 0) {
+        try {
+            const local = JSON.parse(localStorage.getItem('tcda_events') || '[]');
+            if (Array.isArray(local) && local.length > 0) events = local;
+        } catch {}
+    }
+    if (!events || events.length === 0) {
+        container.innerHTML = `
+          <div class="no-events">
+            <div class="no-events-icon">📅</div>
+            <h3><span class="th">ยังไม่มีกิจกรรมในขณะนี้</span><span class="en">No Upcoming Events</span></h3>
+            <p><span class="th">โปรดติดตามประกาศกิจกรรมใหม่เร็ว ๆ นี้</span><span class="en">Please check back soon for new activities.</span></p>
+          </div>
+        `;
         return;
     }
-    container.innerHTML = data.map(e => `
-        <div class="event-card">
-            <img src="${e.photo || 'placeholder.jpg'}" style="width:100%; height:200px; object-fit:cover;" onerror="this.style.display='none'">
-            <h3>${e.title_th || ''}</h3>
-            <p>${e.desc_th || ''}</p>
-            <small>📍 ${e.venue || ''} | 📅 ${e.date || ''}</small>
-        </div>
-    `).join('');
+
+    const escapeHtml = (val) => String(val || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+
+    const toDate = (raw) => {
+      if (!raw) return null;
+      const d = new Date(raw);
+      if (Number.isNaN(d.getTime())) return null;
+      return d;
+    };
+
+    eventDetailCache = events;
+    container.innerHTML = events.map((e, idx) => {
+      const d = toDate(e.date);
+      const fullDateTh = d ? d.toLocaleDateString('th-TH', { day:'numeric', month:'long', year:'numeric' }) : 'รอประกาศวัน';
+      const fullDateEn = d ? d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : 'Date TBA';
+
+      const titleTh = escapeHtml(e.title_th || e.title || '');
+      const titleEn = escapeHtml(e.title_en || e.title_th || e.title || '');
+      const descTh = escapeHtml(e.desc_th || e.description || '');
+      const descEn = escapeHtml(e.desc_en || '');
+      const venue = escapeHtml(e.venue || '');
+      const registerUrlRaw = String(e.register_url || '').trim();
+      const registerUrl = /^https?:\/\//i.test(registerUrlRaw) ? escapeHtml(registerUrlRaw) : '#membership';
+      const hasPhoto = !!(e.photo && String(e.photo).trim());
+      const photoUrl = hasPhoto ? escapeHtml(e.photo) : '';
+      return `
+        <article class="event-post">
+          <div class="event-poster-wrap">
+            ${hasPhoto
+              ? `<img class="event-poster" src="${photoUrl}" alt="${titleEn || 'Event poster'}" loading="lazy" onclick="openEventDetailByIndex(${idx})" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">`
+              : ''
+            }
+            <div class="event-poster-placeholder" style="${hasPhoto ? 'display:none;' : ''}">🎫</div>
+          </div>
+          <div class="event-content">
+            <div class="event-date-row">
+              📅 <span class="th">${fullDateTh}</span><span class="en">${fullDateEn}</span>
+            </div>
+            <h3 class="event-title"><span class="th">${titleTh || '-'}</span><span class="en">${titleEn || '-'}</span></h3>
+            ${venue ? `<div class="event-meta-line"><span class="event-chip">📍 ${venue}</span></div>` : ''}
+            <p class="event-desc"><span class="th">${descTh || 'รายละเอียดจะอัปเดตเร็ว ๆ นี้'}</span><span class="en">${descEn || 'Details will be updated soon.'}</span></p>
+            <button type="button" class="event-more" onclick="openEventDetailByIndex(${idx})"><span class="th">ดูรายละเอียด</span><span class="en">View details</span></button>
+            <div class="event-actions">
+              <a class="event-apply" href="${registerUrl}" ${registerUrl !== '#membership' ? 'target="_blank" rel="noopener"' : ''}><span class="th">สมัครเข้าร่วม</span><span class="en">Apply</span></a>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+}
+
+function openEventDetailByIndex(idx) {
+    const e = eventDetailCache[idx];
+    if (!e) return;
+    const pickText = (...vals) => {
+      for (const v of vals) {
+        if (v === null || v === undefined) continue;
+        const t = String(v).trim();
+        if (t) return t;
+      }
+      return '';
+    };
+    const d = e.date ? new Date(e.date) : null;
+    const fullDateTh = d && !Number.isNaN(d.getTime())
+      ? d.toLocaleDateString('th-TH', { day:'numeric', month:'long', year:'numeric' })
+      : 'รอประกาศวัน';
+    const fullDateEn = d && !Number.isNaN(d.getTime())
+      ? d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
+      : 'Date TBA';
+
+    const registerUrlRaw = String(e.register_url || '').trim();
+    const registerUrl = /^https?:\/\//i.test(registerUrlRaw) ? registerUrlRaw : '#membership';
+
+    const descThText = pickText(
+      e.desc_th,
+      e.description_th,
+      e.details_th,
+      e.content_th,
+      e.body_th,
+      e.descTh,
+      e.detail_th,
+      e.desc,
+      e.description,
+      e.details,
+      e.content,
+      e.body
+    );
+    const descEnText = pickText(
+      e.desc_en,
+      e.description_en,
+      e.details_en,
+      e.content_en,
+      e.body_en,
+      e.descEn,
+      e.detail_en,
+      descThText
+    );
+
+    openEventDetail(
+      String(e.photo || ''),
+      String(e.title_th || e.title || ''),
+      String(e.title_en || e.title_th || e.title || ''),
+      fullDateTh,
+      fullDateEn,
+      String(e.venue || ''),
+      descThText,
+      descEnText,
+      registerUrl
+    );
+}
+
+function openEventDetail(photoUrl, titleTh, titleEn, dateTh, dateEn, venue, descTh, descEn, registerUrl) {
+    const modal = document.getElementById('eventImgModal');
+    const img = document.getElementById('eventImgModalPhoto');
+    const tTh = document.getElementById('eventDetailTitleTh');
+    const tEn = document.getElementById('eventDetailTitleEn');
+    const dTh = document.getElementById('eventDetailDateTh');
+    const dEn = document.getElementById('eventDetailDateEn');
+    const vTh = document.getElementById('eventDetailVenueTh');
+    const vEn = document.getElementById('eventDetailVenueEn');
+    const xTh = document.getElementById('eventDetailDescTh');
+    const xEn = document.getElementById('eventDetailDescEn');
+    const reg = document.getElementById('eventDetailRegisterLink');
+    if (!modal || !img) return;
+    img.src = photoUrl || '';
+    img.alt = titleEn || 'Event poster';
+    if (tTh) tTh.textContent = titleTh || '-';
+    if (tEn) tEn.textContent = titleEn || '-';
+    if (dTh) dTh.textContent = dateTh || 'รอประกาศวัน';
+    if (dEn) dEn.textContent = dateEn || 'Date TBA';
+    if (vTh) vTh.textContent = venue ? `สถานที่: ${venue}` : '';
+    if (vEn) vEn.textContent = venue ? `Venue: ${venue}` : '';
+    const finalTh = (descTh || descEn || '').trim();
+    const finalEn = (descEn || descTh || '').trim();
+    if (xTh) xTh.textContent = finalTh || 'รายละเอียดจะอัปเดตเร็ว ๆ นี้';
+    if (xEn) xEn.textContent = finalEn || 'Details will be updated soon.';
+    if (reg) {
+        const safeUrl = registerUrl || '#membership';
+        reg.href = safeUrl;
+        if (safeUrl !== '#membership') {
+            reg.target = '_blank';
+            reg.rel = 'noopener';
+        } else {
+            reg.removeAttribute('target');
+            reg.removeAttribute('rel');
+        }
+    }
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEventPoster() {
+    const modal = document.getElementById('eventImgModal');
+    const img = document.getElementById('eventImgModalPhoto');
+    if (img) img.src = '';
+    if (modal) modal.classList.remove('open');
+    document.body.style.overflow = '';
 }
 
 // --- 2. ดึงข้อมูลคณะกรรมการ (Board) ---
@@ -1053,6 +1510,125 @@ function setLang(lang) {
     localStorage.setItem('tcda_lang', lang);
 }
 
+function showAuthInlineMessage(msg, isError = false) {
+    const el = document.getElementById('auth-inline-msg');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.style.display = msg ? 'block' : 'none';
+    el.style.color = isError ? '#b91c1c' : '#b45309';
+}
+
+function showSetPasswordGate(message) {
+    document.getElementById('membersContent').style.display = 'none';
+    document.getElementById('loginGate').style.display = 'none';
+    document.getElementById('setPasswordGate').style.display = 'block';
+    const errEl = document.getElementById('sp-error');
+    if (errEl) {
+        errEl.style.display = message ? 'block' : 'none';
+        errEl.style.color = '#1d4ed8';
+        errEl.textContent = message || '';
+    }
+    const section = document.getElementById('members-area');
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showLoginGate(message, isError = false) {
+    document.getElementById('membersContent').style.display = 'none';
+    document.getElementById('setPasswordGate').style.display = 'none';
+    document.getElementById('loginGate').style.display = 'block';
+    showAuthInlineMessage(message || '', isError);
+    const section = document.getElementById('members-area');
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function loadApprovedMemberByEmail(email) {
+    const { data, error } = await sb.from('members')
+        .select('*')
+        .eq('email', email)
+        .single();
+    if (error || !data) return null;
+    return data;
+}
+
+async function handleAuthFromUrl() {
+    const hashRaw = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
+    const hashParams = new URLSearchParams(hashRaw);
+    const queryParams = new URLSearchParams(window.location.search || '');
+    const errorCode = hashParams.get('error_code');
+    const errorCodeQ = queryParams.get('error_code');
+    const errorDescription = hashParams.get('error_description') || queryParams.get('error_description') || '';
+
+    if (errorCode === 'otp_expired' || errorCodeQ === 'otp_expired') {
+        showAuthInlineMessage('ลิงก์หมดอายุแล้ว กรุณาติดต่อแอดมินเพื่อส่ง invitation ใหม่', true);
+    } else if (errorCode || errorCodeQ) {
+        const isInviteError = /invite|expired|invalid|otp/i.test(errorDescription);
+        showAuthInlineMessage(
+            isInviteError
+                ? 'ลิงก์ invitation ไม่ถูกต้องหรือหมดอายุ กรุณาติดต่อแอดมินเพื่อส่งใหม่'
+                : 'ลิงก์ยืนยันไม่ถูกต้อง กรุณาติดต่อแอดมินเพื่อส่ง invitation ใหม่',
+            true
+        );
+    }
+
+    try {
+        // Case 1: URL hash มี access/refresh token โดยตรง
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        const hashType = (hashParams.get('type') || '').toLowerCase();
+        if (accessToken && refreshToken) {
+            const { error: setErr } = await sb.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken
+            });
+            if (setErr) throw setErr;
+            if (hashType === 'invite' || hashType === 'recovery') {
+                showSetPasswordGate('ยืนยันลิงก์แล้ว กรุณาตั้งรหัสผ่านใหม่เพื่อเข้าใช้งาน');
+            }
+        }
+
+        // Case 2: URL query มี code (PKCE flow)
+        const authCode = queryParams.get('code');
+        const queryType = (queryParams.get('type') || '').toLowerCase();
+        if (authCode) {
+            const { error: exchangeErr } = await sb.auth.exchangeCodeForSession(authCode);
+            if (exchangeErr) throw exchangeErr;
+            if (queryType === 'invite' || queryType === 'recovery' || !queryType) {
+                showSetPasswordGate('ยืนยันลิงก์แล้ว กรุณาตั้งรหัสผ่านใหม่เพื่อเข้าใช้งาน');
+            }
+        }
+
+        // Case 3: token_hash flow (Supabase invite/recovery standard links)
+        const tokenHash = queryParams.get('token_hash');
+        if (tokenHash && (queryType === 'invite' || queryType === 'recovery')) {
+            const { error: verifyErr } = await sb.auth.verifyOtp({
+                token_hash: tokenHash,
+                type: queryType
+            });
+            if (verifyErr) throw verifyErr;
+            showSetPasswordGate('ยืนยันลิงก์แล้ว กรุณาตั้งรหัสผ่านใหม่เพื่อเข้าใช้งาน');
+        }
+
+        // fallback: ถ้ามี session แล้ว ให้เปิดตั้งรหัสได้เลย
+        const { data: { session } } = await sb.auth.getSession();
+        if (session?.user?.email) {
+            sessionStorage.setItem('tcda_pending_email', session.user.email);
+            if (hashParams.get('type') || queryParams.get('type') || hashParams.get('access_token') || queryParams.get('code')) {
+                showSetPasswordGate('ยืนยันอีเมลแล้ว กรุณาตั้งรหัสผ่านใหม่เพื่อเข้าใช้งาน');
+            }
+        }
+
+        // ล้าง query/hash หลังประมวลผลสำเร็จ ป้องกันวนซ้ำ
+        if (window.location.hash || window.location.search) {
+            const cleanUrl = `${window.location.origin}${window.location.pathname}`;
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
+    }
+    catch (e) {
+        console.warn('handleAuthFromUrl:', e);
+        showAuthInlineMessage('ตรวจสอบลิงก์ invitation ไม่สำเร็จ กรุณาลองใหม่หรือติดต่อแอดมิน', true);
+    }
+}
+
 // --- 7. Member Login ---
 async function doLogin() {
     const email = document.getElementById('l-email')?.value?.trim();
@@ -1060,39 +1636,28 @@ async function doLogin() {
     if (!email || !pw) { alert('กรุณากรอกอีเมลและรหัสผ่าน'); return; }
 
     try {
-        // ค้นหาสมาชิกจาก email
-        const { data, error } = await sb.from('members')
-            .select('*')
-            .eq('email', email)
-            .single();
-
-        if (error || !data) {
-            alert('ไม่พบอีเมลนี้ในระบบ\nEmail not found.');
+        showAuthInlineMessage('');
+        // Supabase Auth: login ด้วย email/password
+        const { data: authData, error: authErr } = await sb.auth.signInWithPassword({ email, password: pw });
+        if (authErr || !authData?.user) {
+            alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง\nInvalid email or password.');
             return;
         }
 
-        // ตรวจสอบรหัสผ่าน (bcrypt หรือ plain — ขึ้นอยู่กับ schema)
-        if (!data.password) {
-            // ยังไม่ได้ตั้งรหัสผ่าน → แสดงหน้า setPassword
-            sessionStorage.setItem('tcda_pending_email', email);
-            document.getElementById('loginGate').style.display = 'none';
-            document.getElementById('setPasswordGate').style.display = 'block';
+        const member = await loadApprovedMemberByEmail(email);
+        if (!member) {
+            alert('ไม่พบข้อมูลสมาชิกในระบบหลังบ้าน\nMember record not found.');
+            await sb.auth.signOut();
             return;
         }
-
-        if (data.password !== pw) {
-            alert('รหัสผ่านไม่ถูกต้อง\nIncorrect password.');
-            return;
-        }
-
-        if (data.status !== 'approved') {
+        if (member.status !== 'approved') {
             alert('บัญชีของคุณยังรอการอนุมัติ\nYour account is pending approval.');
+            await sb.auth.signOut();
             return;
         }
 
-        // เข้าสู่ระบบสำเร็จ
-        sessionStorage.setItem('tcda_member', JSON.stringify(data));
-        showMembersArea(data);
+        sessionStorage.setItem('tcda_member', JSON.stringify(member));
+        showMembersArea(member);
 
     } catch (err) {
         console.error('doLogin error:', err);
@@ -1118,26 +1683,25 @@ async function doSetPassword() {
     }
     errEl.style.display = 'none';
 
-    const email = sessionStorage.getItem('tcda_pending_email');
-    if (!email) { alert('Session หมดอายุ กรุณาเข้าสู่ระบบใหม่'); return; }
-
     try {
-        const { data, error } = await sb.from('members')
-            .update({ password: pw })
-            .eq('email', email)
-            .select()
-            .single();
+        const { data: authData, error: authError } = await sb.auth.updateUser({ password: pw });
+        if (authError) throw authError;
 
-        if (error) throw error;
-
+        const email = authData?.user?.email || sessionStorage.getItem('tcda_pending_email');
+        if (!email) throw new Error('Auth session expired');
         sessionStorage.removeItem('tcda_pending_email');
-        sessionStorage.setItem('tcda_member', JSON.stringify(data));
-        document.getElementById('setPasswordGate').style.display = 'none';
-        showMembersArea(data);
+        sessionStorage.removeItem('tcda_member');
+        document.getElementById('sp-pw').value = '';
+        document.getElementById('sp-pw2').value = '';
+        document.getElementById('l-email').value = email;
+        document.getElementById('l-pw').value = '';
+        await sb.auth.signOut();
+        showLoginGate('ตั้งรหัสผ่านสำเร็จแล้ว กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่');
 
     } catch (err) {
         console.error('doSetPassword error:', err);
-        errEl.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+        errEl.style.color = 'red';
+        errEl.textContent = 'ตั้งรหัสผ่านไม่สำเร็จ: ' + (err?.message || 'unknown error');
         errEl.style.display = 'block';
     }
 }
@@ -1162,6 +1726,7 @@ function doLogout() {
     document.getElementById('membersContent').style.display = 'none';
     document.getElementById('loginGate').style.display = 'block';
     document.getElementById('l-pw').value = '';
+    sb.auth.signOut().catch(() => {});
 }
 
 // --- 11. Member Tabs ---
@@ -1280,25 +1845,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Default to Thai on first load
     setLang('th');
 
-    // โหลดโลโก้จาก Admin (localStorage) ถ้ามี
-    const storedLogo = localStorage.getItem('tcda_logo_url') || localStorage.getItem('tcda_logo') || '';
-    document.querySelectorAll('.site-logo-img').forEach(img => {
-        const defaultSrc = img.src || '';
-        if (storedLogo) {
-            img.src = storedLogo;
-            img.onerror = function() {
-                this.src = defaultSrc;
-                this.style.opacity = '1';
-                this.style.display = '';
-            };
-        }
-    });
+    // ใช้โลโก้ที่ฝังอยู่ในไฟล์เพื่อความเสถียร
 
     // โหลดข้อมูลสาธารณะ
     loadEvents();
     loadBoard();
 
-    // ตรวจ session สมาชิก
+    // ตรวจ session สมาชิก (sessionStorage ก่อน)
     const memberJson = sessionStorage.getItem('tcda_member');
     if (memberJson) {
         try {
@@ -1309,12 +1862,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ตรวจ redirect จาก Supabase Auth (invite/recovery/expired otp)
+    handleAuthFromUrl();
+
     // Fade-in animations
     initFadeIn();
 
     // Escape key ปิด modal
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeRules();
+        if (e.key === 'Escape') {
+            closeRules();
+            closeEventPoster();
+        }
     });
 });
 </script>
